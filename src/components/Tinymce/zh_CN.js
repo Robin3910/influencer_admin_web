@@ -1,3 +1,4 @@
+import tinymce from 'tinymce'
 tinymce.addI18n('zh_CN', {
   Cut: '\u526a\u5207',
   'Heading 5': '\u6807\u98985',

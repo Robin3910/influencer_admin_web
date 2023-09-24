@@ -40,7 +40,7 @@
           <el-button style="width: 45%" type="primary" :loading="loading" @click.native.prevent="handleLogin">
             登录
           </el-button>
-          <el-button style="width: 45%" type="primary" @click.native.prevent="handleTry">
+          <el-button v-if="false" style="width: 45%" type="primary" @click.native.prevent="handleTry">
             获取体验账号
           </el-button>
         </el-form-item>
@@ -69,6 +69,7 @@
 import { isvalidUsername } from '@/utils/validate'
 import { setSupport, getSupport, setCookie, getCookie } from '@/utils/support'
 import login_center_bg from '@/assets/images/login_center_bg.png'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'login',
@@ -90,7 +91,7 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: 'admin'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -134,7 +135,10 @@ export default {
             this.loading = false
             setCookie('username', this.loginForm.username, 15)
             setCookie('password', this.loginForm.password, 15)
-            this.$router.push({ path: '/' })
+            console.log('>>>>>>>>>gettoken',getToken())
+            setTimeout(()=>{
+              this.$router.push({ path: '/' })
+            },1000)
           }).catch(() => {
             this.loading = false
           })

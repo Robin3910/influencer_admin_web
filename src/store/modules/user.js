@@ -32,6 +32,7 @@ const user = {
         login(username, userInfo.password).then(response => {
           const data = response.data
           const tokenStr = data.tokenHead + data.token
+          console.log('>>>>>>>>>设置token',response.data)
           setToken(tokenStr)
           commit('SET_TOKEN', tokenStr)
           resolve()

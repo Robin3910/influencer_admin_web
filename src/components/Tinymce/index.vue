@@ -9,7 +9,8 @@
 
 <script>
 import editorImage from './components/editorImage'
-import '../../../static/tinymce4.7.5/langs/zh_CN'
+import tinymce from 'tinymce'
+
 
 const plugins = [
  `advlist anchor autolink autosave code codesample colorpicker colorpicker
@@ -81,6 +82,7 @@ export default {
   methods: {
     initTinymce () {
       const _this = this
+      window.tinymce=tinymce
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
         width: this.width,
