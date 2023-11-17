@@ -7,7 +7,7 @@
       <el-row style="margin-top: 10px">
         <el-col :span="12" style="display: flex;align-items: center">
           <span style="flex: 0 0 auto;margin-right: 10px">名称:</span>
-          <el-input clearable v-model="listQuery.name" style="margin-right: 10px" size="small"></el-input>
+          <el-input clearable v-model="listQuery.title" style="margin-right: 10px" size="small"></el-input>
           <el-button size="small" type="primary" @click="handlerSearch">查询</el-button>
           <el-button
               class="btn-add"
@@ -28,18 +28,10 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="分类名称" align="center">
-          <template slot-scope="scope">
-           <div v-for="(item,index) in  scope.row.cateGoryList" :key="index">
-             <el-tag >
-               {{item.title}}
-             </el-tag>
-           </div>
-          </template>
+        <el-table-column label="标题" align="center">
+          <template slot-scope="scope">{{ scope.row.title }}</template>
         </el-table-column>
-        <el-table-column label="名称" align="center">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
-        </el-table-column>
+
         <el-table-column label="头像" align="center">
           <template slot-scope="scope">
             <el-image
@@ -49,21 +41,30 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="粉丝数" align="center">
+        <el-table-column label="链接" align="center">
           <template slot-scope="scope">
-            <div v-for="(item,index) in scope.row.fansList" :key="index">
-
-              <span>{{item.platform }}:{{ item.count > 1000 ? item.count / 1000 + 'k' : item.count }}</span>
-            </div>
+            <a :href=" scope.row.link" target="_blank" style="text-decoration: underline;color: skyblue">链接</a>
           </template>
         </el-table-column>
-        <el-table-column label="非会员价格" align="center">
-          <template slot-scope="scope">{{ scope.row.price }}</template>
+
+        <el-table-column label="国家" align="center">
+          <template slot-scope="scope">{{ scope.row.region }}</template>
         </el-table-column>
-        <el-table-column label="会员价格" align="center">
-          <template slot-scope="scope">{{ scope.row.realPrice }}</template>
+        <el-table-column label="平台" align="center">
+          <template slot-scope="scope">{{ scope.row.platform }}</template>
         </el-table-column>
-        <el-table-column label="是否显示" width="100" align="center">
+        <el-table-column label="product_platform" align="center">
+          <template slot-scope="scope">{{ scope.row.productPlatform }}</template>
+        </el-table-column>
+        <el-table-column label="members" align="center">
+          <template slot-scope="scope">{{ scope.row.members }}</template>
+        </el-table-column>
+        <el-table-column label="day_push" align="center">
+          <template slot-scope="scope">{{ scope.row.dayPush }}</template>
+        </el-table-column>
+
+
+        <el-table-column v-if="false" label="是否显示" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
                 @change="handleShowStatusChange(scope.$index, scope.row)"
@@ -106,7 +107,7 @@
 </template>
 
 <script>
-import {fetchList, deleteProductCate, updateShowStatus, updateNavStatus} from '@/api/whList'
+import {fetchList, deleteProductCate, updateShowStatus, updateNavStatus} from '@/api/whResource'
 
 export default {
   name: 'productCateList',
@@ -124,6 +125,7 @@ export default {
     }
   },
   created() {
+
     this.getList()
   },
   watch: {
@@ -140,9 +142,10 @@ export default {
 
     },
     handleAddProductCate() {
-      this.$router.push('/wh/addList')
+      this.$router.push('/resource/addList')
     },
     getList() {
+
       this.listLoading = true
       fetchList({...this.listQuery}).then(response => {
         this.listLoading = false
@@ -192,7 +195,7 @@ export default {
       console.log('handleAddProductCate')
     },
     handleUpdate(index, row) {
-      this.$router.push({path: '/wh/updateList', query: {id: row.id}})
+      this.$router.push({path: '/resource/updateList', query: {id: row.id}})
     },
     handleDelete(index, row) {
       this.$confirm('是否要删除么', '提示', {

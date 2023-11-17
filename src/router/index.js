@@ -51,6 +51,65 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouterMap = [
+
+  {
+    path: '/resource',
+    component: Layout,
+    redirect: '/resource/list',
+    name: 'resource',
+    meta: {
+      title: '资源管理',
+      icon: 'product'
+    },
+    children: [
+      {
+        path: 'region',
+        name: 'region',
+        component: () => import('@/views/resource/productCate/index'),
+        meta: {
+          title: '分类',
+          icon: 'product-cate'
+        }
+      },
+      {
+        path: 'addCategory',
+        name: 'addCategory',
+        component: () => import('@/views/resource/productCate/add'),
+        meta: { title: '添加分类' },
+        hidden: true
+      },
+      {
+        path: 'updateCategory',
+        name: 'updateCategory',
+        component: () => import('@/views/resource/productCate/update'),
+        meta: { title: '修改分类' },
+        hidden: true
+      },
+      {
+        path: 'list',
+        name: 'reList',
+        component: () => import('@/views/resource/List/index'),
+        meta: {
+          title: '达人列表',
+          icon: 'product-cate'
+        }
+      },
+      {
+        path: 'addList',
+        name: 'addList',
+        component: () => import('@/views/resource/List/add'),
+        meta: { title: '添加记录' },
+        hidden: true
+      },
+      {
+        path: 'updateList',
+        name: 'updateList',
+        component: () => import('@/views/resource/List/update'),
+        meta: { title: '修改记录' },
+        hidden: true
+      },
+    ]
+  },
   {
     path: '/wh',
     component: Layout,

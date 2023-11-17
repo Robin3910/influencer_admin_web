@@ -5,64 +5,47 @@
       <span style="margin-top: 5px">数据列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddMenu()"
+        @click="handleAddProductCate()"
         size="mini">
         添加
       </el-button>
+
     </el-card>
     <div class="table-container">
-      <el-table ref="menuTable"
+      <el-table ref="productCateTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="菜单名称" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
-        </el-table-column>
-        <el-table-column label="菜单级数" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
-        </el-table-column>
-        <el-table-column label="前端名称" align="center">
+        <el-table-column label="国家" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="前端图标" width="100" align="center">
-          <template slot-scope="scope"><svg-icon :icon-class="scope.row.icon"></svg-icon></template>
+        <el-table-column label="排序" align="center">
+          <template slot-scope="scope">{{scope.row.sort}}</template>
         </el-table-column>
         <el-table-column label="是否显示" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleHiddenChange(scope.$index, scope.row)"
+              @change="handleShowStatusChange(scope.$index, scope.row)"
               :active-value="0"
-              :inactive-value="1"
-              v-model="scope.row.hidden">
+              :inactive-value="-1"
+              v-model="scope.row.status">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
-        </el-table-column>
-        <el-table-column label="设置" width="120" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              :disabled="scope.row.level | disableNextLevel"
-              @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
-            </el-button>
-          </template>
-        </el-table-column>
+
+
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              type="text"
               @click="handleUpdate(scope.$index, scope.row)">编辑
             </el-button>
             <el-button
               size="mini"
-              type="text"
+              type="danger"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
@@ -76,7 +59,7 @@
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
         :page-size="listQuery.pageSize"
-        :page-sizes="[10,15,20]"
+        :page-sizes="[5,10,15]"
         :current-page.sync="listQuery.pageNum"
         :total="total">
       </el-pagination>
@@ -85,10 +68,10 @@
 </template>
 
 <script>
-import { fetchList, deleteMenu, updateMenu, updateHidden } from '@/api/menu'
+import { fetchList, deleteProductCate, updateShowStatus, updateNavStatus } from '@/api/whRegion'
 
 export default {
-  name: 'menuList',
+  name: 'productCateList',
   data () {
     return {
       list: null,
@@ -96,7 +79,7 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       parentId: 0
     }
@@ -120,12 +103,12 @@ export default {
         this.parentId = 0
       }
     },
-    handleAddMenu () {
-      this.$router.push('/ums/addMenu')
+    handleAddProductCate () {
+      this.$router.push('/res/addCategory')
     },
     getList () {
       this.listLoading = true
-      fetchList(this.parentId, this.listQuery).then(response => {
+      fetchList({...this.listQuery}).then(response => {
         this.listLoading = false
         this.list = response.data.list
         this.total = response.data.total
@@ -140,8 +123,25 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    handleHiddenChange (index, row) {
-      updateHidden(row.id, { hidden: row.hidden }).then(response => {
+    handleNavStatusChange (index, row) {
+      const data = new URLSearchParams()
+      const ids = []
+      ids.push(row.id)
+      data.append('ids', ids)
+      data.append('navStatus', row.navStatus)
+      updateNavStatus(data).then(response => {
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
+        })
+      })
+    },
+    handleShowStatusChange (index, row) {
+
+      updateShowStatus(row.id,{
+        status:row.status.toString()
+      }).then(response => {
         this.$message({
           message: '修改成功',
           type: 'success',
@@ -150,18 +150,21 @@ export default {
       })
     },
     handleShowNextLevel (index, row) {
-      this.$router.push({ path: '/ums/menu', query: { parentId: row.id } })
+      this.$router.push({ path: '/pms/productCate', query: { parentId: row.id } })
+    },
+    handleTransferProduct (index, row) {
+      console.log('handleAddProductCate')
     },
     handleUpdate (index, row) {
-      this.$router.push({ path: '/ums/updateMenu', query: { id: row.id } })
+      this.$router.push({ path: '/resource/updateCategory', query: { id: row.id } })
     },
     handleDelete (index, row) {
-      this.$confirm('是否要删除该菜单', '提示', {
+      this.$confirm('是否要删除么', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteMenu(row.id).then(response => {
+        deleteProductCate(row.id).then(response => {
           this.$message({
             message: '删除成功',
             type: 'success',

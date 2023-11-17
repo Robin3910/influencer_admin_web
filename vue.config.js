@@ -1,5 +1,6 @@
 const {resolve} = require('path')
 module.exports = {
+
   lintOnSave:false,
   runtimeCompiler:true,
   devServer: {
@@ -11,7 +12,6 @@ module.exports = {
     }
   },
   chainWebpack(config){
-
     config.module
     config.module
       .rule('svg')
