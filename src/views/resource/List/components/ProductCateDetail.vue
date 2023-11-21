@@ -35,7 +35,6 @@
         message:'国家必填'
       }]">
         <el-select v-model="productCate.region" style="width: 100%">
-          <el-option value="">请选择</el-option>
           <el-option v-for="(item,index) in selectProductCateList" :key="index" :value="item.name"
                      :label="item.name"></el-option>
         </el-select>
@@ -172,7 +171,9 @@ export default {
     })
 
     if (this.isEdit) {
-      fetchList(this.$route.query.id).then(response => {
+      fetchList({
+        id:this.$route.query.id
+      }).then(response => {
         console.log('>>>>>>>>response', response)
         this.productCate = response.data.list[0]
       })

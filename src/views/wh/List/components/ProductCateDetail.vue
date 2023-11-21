@@ -9,7 +9,6 @@
         message:'分类必填'
       }]">
         <el-select v-model="productCate.categoryId" multiple style="width: 100%">
-          <el-option value="">请选择</el-option>
           <el-option v-for="(item,index) in selectProductCateList" :key="index" :value="item.id"
                      :label="item.title"></el-option>
         </el-select>
@@ -208,7 +207,10 @@ export default {
           }).then(() => {
             if (this.isEdit) {
 
-              updateProductCate(this.$route.query.id, this.productCate).then(response => {
+              updateProductCate(this.$route.query.id, {
+                ...this.productCate,
+                categoryId:this.productCate.categoryId.join(",")
+              }).then(response => {
                 this.$message({
                   message: '修改成功',
                   type: 'success',
@@ -219,7 +221,12 @@ export default {
             } else {
 
 
-              createProductCate(this.productCate).then(response => {
+              createProductCate(
+                {
+                  ...this.productCate,
+                  categoryId:this.productCate.categoryId.join(",")
+                }
+              ).then(response => {
                 // this.$refs[formName].resetFields()
                 // this.resetForm(formName)
                 this.$message({
@@ -230,7 +237,7 @@ export default {
               })
             }
             setTimeout(() => {
-              this.$router.push("/wh/list")
+              // this.$router.push("/wh/list")
             }, 1000)
           })
         } else {
